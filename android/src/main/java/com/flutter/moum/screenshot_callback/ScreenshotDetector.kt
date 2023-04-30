@@ -9,8 +9,10 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 
-class ScreenshotDetector(private val context: Context,
-                         private val callback: (name: String) -> Unit) {
+class ScreenshotDetector(
+    private val context: Context,
+    private val callback: (name: String) -> Unit
+) {
 
     private var contentObserver: ContentObserver? = null
 
@@ -28,7 +30,7 @@ class ScreenshotDetector(private val context: Context,
     private fun reportScreenshotsUpdate(uri: Uri) {
         val screenshots: List<String> = queryScreenshots(uri)
         if (screenshots.isNotEmpty()) {
-            callback.invoke(screenshots.last());
+            callback.invoke(screenshots.last())
         }
     }
 
@@ -39,7 +41,7 @@ class ScreenshotDetector(private val context: Context,
             } else {
                 queryDataColumn(uri)
             }
-        }  catch (e:Exception){
+        } catch (e: Exception) {
             listOf()
         }
     }
@@ -48,14 +50,14 @@ class ScreenshotDetector(private val context: Context,
         val screenshots = mutableListOf<String>()
 
         val projection = arrayOf(
-                MediaStore.Images.Media.DATA
+            MediaStore.Images.Media.DATA
         )
         context.contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                null
+            uri,
+            projection,
+            null,
+            null,
+            null
         )?.use { cursor ->
             val dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
 
@@ -74,25 +76,25 @@ class ScreenshotDetector(private val context: Context,
         val screenshots = mutableListOf<String>()
 
         val projection = arrayOf(
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.RELATIVE_PATH
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.RELATIVE_PATH
         )
         context.contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                null
+            uri,
+            projection,
+            null,
+            null,
+            null
         )?.use { cursor ->
             val relativePathColumn =
-                    cursor.getColumnIndex(MediaStore.Images.Media.RELATIVE_PATH)
+                cursor.getColumnIndex(MediaStore.Images.Media.RELATIVE_PATH)
             val displayNameColumn =
-                    cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+                cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
             while (cursor.moveToNext()) {
                 val name = cursor.getString(displayNameColumn)
                 val relativePath = cursor.getString(relativePathColumn)
                 if (name.contains("screenshot", true) or
-                        relativePath.contains("screenshot", true)
+                    relativePath.contains("screenshot", true)
                 ) {
                     screenshots.add(name)
                 }
