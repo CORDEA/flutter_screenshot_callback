@@ -6,18 +6,17 @@ class ScreenshotCallback {
   static const MethodChannel _channel =
       const MethodChannel('flutter.moum/screenshot_callback');
 
+  static final instance = ScreenshotCallback._();
+
   /// Functions to execute when callback fired.
   List<VoidCallback> onCallbacks = <VoidCallback>[];
 
-  ScreenshotCallback() {
-    initialize();
+  ScreenshotCallback._() {
+    _channel.setMethodCallHandler(_handleMethod);
   }
 
   /// Initializes screenshot callback plugin.
-  Future<void> initialize() async {
-    _channel.setMethodCallHandler(_handleMethod);
-    await _channel.invokeMethod('initialize');
-  }
+  Future<void> initialize() => _channel.invokeMethod('initialize');
 
   /// Add a callback.
   void addListener(VoidCallback callback) {

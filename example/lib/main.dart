@@ -9,8 +9,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late ScreenshotCallback screenshotCallback;
-
   String text = "Ready..";
 
   @override
@@ -26,22 +24,21 @@ class _MyAppState extends State<MyApp> {
 
   //It must be created after permission is granted.
   Future<void> initScreenshotCallback() async {
-    screenshotCallback = ScreenshotCallback();
-
-    screenshotCallback.addListener(() {
+    await ScreenshotCallback.instance.initialize();
+    ScreenshotCallback.instance.addListener(() {
       setState(() {
         text = "Screenshot callback Fired!";
       });
     });
 
-    screenshotCallback.addListener(() {
+    ScreenshotCallback.instance.addListener(() {
       print("We can add multiple listeners ");
     });
   }
 
   @override
   void dispose() {
-    screenshotCallback.dispose();
+    ScreenshotCallback.instance.dispose();
     super.dispose();
   }
 
