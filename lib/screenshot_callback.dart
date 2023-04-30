@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class ScreenshotCallback {
@@ -20,9 +19,14 @@ class ScreenshotCallback {
     await _channel.invokeMethod('initialize');
   }
 
-  /// Add void callback.
+  /// Add a callback.
   void addListener(VoidCallback callback) {
     onCallbacks.add(callback);
+  }
+
+  /// Remove a previously registered callback.
+  void removeListener(VoidCallback callback) {
+    onCallbacks.remove(callback);
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
@@ -38,5 +42,8 @@ class ScreenshotCallback {
   }
 
   /// Remove callback listener.
-  Future<void> dispose() async => await _channel.invokeMethod('dispose');
+  Future<void> dispose() async {
+    onCallbacks.clear();
+    await _channel.invokeMethod('dispose');
+  }
 }
