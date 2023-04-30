@@ -18,6 +18,7 @@ class MethodCallHandlerImpl(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "initialize" -> {
+                dispose()
                 detector = ScreenshotDetector(context) { screenshotName ->
                     if (screenshotName != lastScreenshotName) {
                         lastScreenshotName = screenshotName
@@ -30,9 +31,7 @@ class MethodCallHandlerImpl(private val context: Context) : MethodCallHandler {
             }
 
             "dispose" -> {
-                detector?.stop()
-                detector = null
-                lastScreenshotName = ""
+                dispose()
                 result.success("dispose")
             }
 
@@ -51,5 +50,11 @@ class MethodCallHandlerImpl(private val context: Context) : MethodCallHandler {
     fun stopListening() {
         channel?.setMethodCallHandler(null)
         channel = null
+    }
+
+    private fun dispose() {
+        detector?.stop()
+        detector = null
+        lastScreenshotName = ""
     }
 }
